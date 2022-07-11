@@ -25,4 +25,10 @@ You are welcome to submit a pull request for any step, even the one's we've move
 
 ## Docs and tests
 
-These are not necessary at all - but you are probably doing yourself a favour if you spend some of your cycles thinking about how you would do this in a project where it matters.  
+These are not necessary at all - but you are probably doing yourself a favour if you spend some of your cycles thinking about how you would do this in a project where it matters.
+
+## Resources
+
+* [Rust programming language](https://www.rust-lang.org)
+* [Bevy Engine](https://bevyengine.org)
+* [Unofficial Bevy Cheat Book](https://bevy-cheatbook.github.io)
