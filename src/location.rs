@@ -1,10 +1,10 @@
 use bevy::prelude::*;
 
-pub type XCoord = u8;
-pub type YCoord = u8;
+pub type XCoord = i8;
+pub type YCoord = i8;
 
 #[derive(Component, Default, Debug)]
 pub struct Location {
-    x: XCoord,
-    y: YCoord,
+    pub x: XCoord,
+    pub y: YCoord,
 }
