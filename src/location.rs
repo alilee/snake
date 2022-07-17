@@ -25,6 +25,10 @@ impl Location {
             Direction::Right => try_add(&mut self.x, 1, MAX_X),
         }
     }
+
+    pub fn get_translation(&self) -> Vec3 {
+        Vec3::new(self.x as f32 * 80.0 - 640.0, (9 - self.y) as f32 * 80.0 - 360.0, 1.0)
+    }
 }
 
 fn try_add(coord: &mut Coord, amount: i8, max: Coord) -> Result<(), ()> {
