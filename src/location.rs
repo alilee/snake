@@ -14,7 +14,7 @@ pub struct Location {
 
 impl Location {
     pub fn new() -> Self {
-        Self { x: 7, y: 4 }
+        Self { x: MAX_X / 2, y: MAX_Y / 2 }
     }
 
     pub fn move_by_one(&mut self, dir: &Direction) -> Result<(), ()> {
