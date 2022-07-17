@@ -1,15 +1,13 @@
 mod location;
 mod snake;
 
-use location::*;
-
 use bevy::prelude::*;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugin(snake::Plugin)
         .add_startup_system(setup)
-        .add_system(snake::list_snakes)
         .run();
 }
 
@@ -23,5 +21,4 @@ fn setup(mut commands: Commands) {
         },
         ..default()
     });
-    commands.spawn().insert(snake::Head).insert(Location::default()).insert(snake::Moving::default());
 }
