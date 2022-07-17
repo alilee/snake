@@ -1,4 +1,5 @@
 mod location;
+mod direction;
 mod snake;
 
 use bevy::prelude::*;
