@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::core::FixedTimestep;
 use bevy::input::keyboard::KeyboardInput;
-use bevy::sprite::Anchor;
+use crate::board;
 use crate::location::*;
 use crate::direction::{Direction};
 
@@ -23,11 +23,10 @@ impl bevy::prelude::Plugin for Plugin {
 fn setup(mut commands: Commands) {
     commands.spawn()
         .insert(Head)
-        .insert(Location::new())
+        .insert(Location::default())
         .insert(Moving::default())
         .insert_bundle(SpriteBundle {
             sprite: Sprite {
-                anchor: Anchor::TopLeft,
                 custom_size: Some(Vec2::new(80.0, 80.0)),
                 color: Color::rgb(0.06, 0.46, 0.06),
                 ..default()
@@ -39,7 +38,7 @@ fn setup(mut commands: Commands) {
 #[derive(Component)]
 struct Head;
 
-#[derive(Component, Default, Debug)]
+#[derive(Component, Default)]
 struct Moving {
     last_dir: Direction,
     next_dir: Direction
@@ -48,12 +47,14 @@ struct Moving {
 fn move_snakes(mut query: Query<(&mut Location, &mut Moving), With<Head>>) {
     for (mut loc, mut moving) in query.iter_mut() {
         moving.last_dir = moving.next_dir;
-        match loc.move_by_one(&moving.next_dir) {
-            Ok(_) => {},
-            Err(_) => {
-                println!("Snake hit wall");
-                //TODO handle this
-            }
+
+        let target = loc.adjacent(&moving.next_dir);
+
+        if board::is_in_bounds(target.x, target.y) {
+            *loc = target;
+        } else {
+            println!("Snake hit a wall!");
+            //TODO handle this scenario
         }
     }
 }
@@ -62,7 +63,7 @@ fn update_directions(mut query: Query<&mut Moving, (With<Location>, With<Head>)>
     for mut moving in query.iter_mut() {
         for event in event_keyboard.iter() {
             if let Some(code) = event.key_code {
-                if let Some(dir) = Direction::from_key_code(code) {
+                if let Ok(dir) = Direction::try_from(code) {
                     if moving.last_dir.get_opposite() != dir { moving.next_dir = dir; }
                 }
             }
@@ -72,6 +73,6 @@ fn update_directions(mut query: Query<&mut Moving, (With<Location>, With<Head>)>
 
 fn render_heads(mut query: Query<(&Location, &Moving, &mut Transform), With<Head>>) {
     for (loc, _moving, mut sprite_transform) in query.iter_mut() {
-        sprite_transform.translation = loc.get_translation();
+        sprite_transform.translation = board::get_tile_pixel_position(loc.x, loc.y, 1.0);
     }
 }
