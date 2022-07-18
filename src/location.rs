@@ -1,10 +1,24 @@
 use bevy::prelude::*;
+use crate::direction::{Direction};
+use crate::board::*;
 
-pub type XCoord = u8;
-pub type YCoord = u8;
-
-#[derive(Component, Default, Debug)]
+#[derive(Component, Default, Clone)]
 pub struct Location {
-    x: XCoord,
-    y: YCoord,
+    pub x: XCoord,
+    pub y: YCoord,
+}
+
+impl Location {
+    pub fn adjacent(&self, dir: &Direction) -> Self {
+        let mut result = self.clone();
+
+        match dir {
+            Direction::Up => result.y += 1,
+            Direction::Down => result.y -= 1,
+            Direction::Left => result.x -= 1,
+            Direction::Right => result.x += 1,
+        }
+
+        result
+    }
 }
