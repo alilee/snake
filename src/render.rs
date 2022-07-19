@@ -8,13 +8,25 @@ pub struct Plugin;
 
 impl bevy::prelude::Plugin for Plugin {
     fn build(&self, app: &mut App) {
-        app.add_system(add_head)
-            .add_system(render_heads)
-            .add_startup_system(setup);
+        app.add_startup_system(setup)
+            .add_system(add_head)
+            .add_system(render_heads);
     }
 }
 
 const TILE_SIZE: f32 = 80.0;
+
+fn setup(mut commands: Commands) {
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(SpriteBundle {
+        sprite: Sprite {
+            color: Color::rgb(0.13, 0.73, 0.13),
+            custom_size: Some(Vec2::new(TILE_SIZE * board::WIDTH as f32, TILE_SIZE * board::HEIGHT as f32)),
+            ..default()
+        },
+        ..default()
+    });
+}
 
 fn add_head(mut commands: Commands, query: Query<Entity, Added<snake::Head>>) {
     for id in query.iter() {
@@ -33,18 +45,6 @@ fn render_heads(mut query: Query<(&Location, &mut Transform), With<snake::Head>>
     for (loc, mut sprite_transform) in query.iter_mut() {
         sprite_transform.translation = get_tile_pixel_position(loc.x, loc.y, 1.0);
     }
-}
-
-fn setup(mut commands: Commands) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-    commands.spawn_bundle(SpriteBundle {
-        sprite: Sprite {
-            color: Color::rgb(0.13, 0.73, 0.13),
-            custom_size: Some(Vec2::new(TILE_SIZE * board::WIDTH as f32, TILE_SIZE * board::HEIGHT as f32)),
-            ..default()
-        },
-        ..default()
-    });
 }
 
 fn get_tile_pixel_position(x: XCoord, y: YCoord, height: f32) -> Vec3 {
