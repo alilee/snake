@@ -1,20 +1,17 @@
 use bevy::prelude::*;
-use crate::direction::{Direction};
-use crate::board::*;
+use crate::board::Board;
 
-pub type Coord = usize;
-pub type XCoord = Coord;
-pub type YCoord = Coord;
-
-#[derive(Component, Default, Clone)]
+#[derive(Component, Clone)]
 pub struct Location {
     pub coord: UVec2,
 }
 
 impl Location {
     pub fn new(coord: UVec2) -> Self {
-        Self {
-            coord,
-        }
+        Self { coord }
+    }
+
+    pub(crate) fn starting(board: &Board) -> Self {
+        Self::new(board.limit / 2)
     }
 }
