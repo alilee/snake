@@ -8,8 +8,24 @@ pub struct Plugin;
 
 impl bevy::prelude::Plugin for Plugin {
     fn build(&self, app: &mut App) {
-        app.add_system(render_heads)
+        app.add_system(add_head)
+            .add_system(render_heads)
             .add_startup_system(setup);
+    }
+}
+
+const TILE_SIZE: f32 = 80.0;
+
+fn add_head(mut commands: Commands, query: Query<Entity, Added<snake::Head>>) {
+    for id in query.iter() {
+        commands.entity(id).insert_bundle(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+                color: Color::rgb(0.06, 0.46, 0.06),
+                ..default()
+            },
+            ..default()
+        });
     }
 }
 
@@ -18,8 +34,6 @@ fn render_heads(mut query: Query<(&Location, &mut Transform), With<snake::Head>>
         sprite_transform.translation = get_tile_pixel_position(loc.x, loc.y, 1.0);
     }
 }
-
-const TILE_SIZE: f32 = 80.0;
 
 fn setup(mut commands: Commands) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());

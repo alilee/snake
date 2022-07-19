@@ -20,16 +20,7 @@ fn setup(mut commands: Commands) {
     commands.spawn()
         .insert(Head)
         .insert(Location::default())
-        .insert(Moving::default())
-        // FIXME: this bundle should be in render (somehow)!
-        .insert_bundle(SpriteBundle {
-            sprite: Sprite {
-                custom_size: Some(Vec2::new(80.0, 80.0)),
-                color: Color::rgb(0.06, 0.46, 0.06),
-                ..default()
-            },
-            ..default()
-        });
+        .insert(Moving::default());
 }
 
 #[derive(Component)]
