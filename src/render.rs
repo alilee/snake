@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use crate::location::Location;
 use crate::board;
-use crate::board::{XCoord, YCoord};
+use crate::board::{Coord, XCoord, YCoord, Size, XSize, YSize};
 use crate::snake;
 
 pub struct Plugin;
@@ -55,13 +55,7 @@ fn get_tile_pixel_position(x: XCoord, y: YCoord, height: f32) -> Vec3 {
     )
 }
 
-fn calculate_pixel_coordinate(coord: i8, size: i8) -> f32 {
-    let coord = coord as f32 * TILE_SIZE;
-    if size % 2 == 1 {
-        coord
-    } else {
-        coord - (TILE_SIZE / 2.0)
-    }
+fn calculate_pixel_coordinate(coord: Coord, size: Size) -> f32 {
+    let pixel_coord = coord as f32 * TILE_SIZE;
+    if size % 2 == 1 { pixel_coord } else { pixel_coord - (TILE_SIZE / 2.0) }
 }
-
-
