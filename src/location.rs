@@ -1,3 +1,4 @@
+use bevy::math::uvec2;
 use bevy::prelude::*;
 use crate::board::Board;
 
@@ -12,6 +13,6 @@ impl Location {
     }
 
     pub(crate) fn starting(board: &Board) -> Self {
-        Self::new(board.limit / 2)
+        Self::new(uvec2(board.limit.x / 2, (board.limit.y - 1) / 2 + 1))
     }
 }
