@@ -1,43 +1,49 @@
 use bevy::prelude::*;
 use std::ops::RangeInclusive;
+use bevy::math::*;
 use crate::App;
 use crate::location::Location;
+use crate::direction::Direction;
 use crate::snake;
 
 pub struct Plugin;
 
 impl bevy::prelude::Plugin for Plugin {
     fn build(&self, app: &mut App) {
-        app.add_system(bounds);
+        app.init_resource::<Board>();
     }
 }
 
-fn bounds(mut query: Query<&mut Location, With<snake::Head>>) {
-    for mut loc in query.iter_mut() {
-        if !is_in_bounds(loc.x, loc.y) {
-            println!("Snake hit a wall!");
-            *loc = Location::default();
-            //TODO handle this scenario
+pub(crate) struct Board {
+    pub(crate) limit: UVec2,
+}
+
+impl Board {
+    pub fn adjacent(&self, loc: &Location, dir: &Direction) -> Option<Location> {
+        let coord = loc.coord;
+        let coord = match dir {
+            Direction::Up if coord.y < self.limit.y => {
+                coord + uvec2(0, 1)
+            }
+            Direction::Down if coord.y > 0 => {
+                coord - uvec2(0, 1)
+            }
+            Direction::Left if coord.x > 0 => {
+                coord - uvec2(1, 0)
+            }
+            Direction::Right if coord.x < self.limit.x => {
+                coord + uvec2(1, 0)
+            }
+            _ => return None,
+        };
+        Some(Location::new(coord))
+    }
+}
+
+impl Default for Board {
+    fn default() -> Self {
+        Board {
+            limit: uvec2(15, 8),
         }
     }
-}
-
-pub type Coord = i8;
-pub type XCoord = Coord;
-pub type YCoord = Coord;
-
-pub type Size = u8;
-pub type XSize = Size;
-pub type YSize = Size;
-
-pub const WIDTH: XSize = 16;
-pub const HEIGHT: YSize = 9;
-
-fn is_in_bounds(x: XCoord, y: YCoord) -> bool {
-    get_bound_range(WIDTH).contains(&x) && get_bound_range(HEIGHT).contains(&y)
-}
-
-fn get_bound_range(size: Size) -> RangeInclusive<i8> {
-    let half = (size / 2) as i8;
-    if size % 2 == 1 { -half..=half } else { -(half - 1)..=half }
 }
