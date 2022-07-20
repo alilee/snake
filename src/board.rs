@@ -30,6 +30,10 @@ impl Board {
 
         Some(Location::new(result_coord))
     }
+
+    pub fn starting_location(&self) -> Location {
+        Location::new(uvec2(self.limit.x / 2, (self.limit.y - 1) / 2 + 1))
+    }
 }
 
 impl Default for Board {

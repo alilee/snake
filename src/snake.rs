@@ -20,7 +20,7 @@ impl bevy::prelude::Plugin for Plugin {
 fn setup(mut commands: Commands, board: Res<Board>) {
     commands.spawn()
         .insert(Head)
-        .insert(Location::starting(&*board))
+        .insert(board.starting_location())
         .insert(Moving::default());
 }
 
@@ -39,7 +39,7 @@ fn move_snakes(board: Res<Board>, mut query: Query<(&mut Location, &mut Moving),
             None => {
                 println!("Snake hit a wall!");
                 *moving = Moving::default();
-                Location::starting(&*board)
+                board.starting_location()
             },
         };
     }
