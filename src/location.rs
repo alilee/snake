@@ -1,24 +1,18 @@
+use bevy::math::uvec2;
 use bevy::prelude::*;
-use crate::direction::{Direction};
-use crate::board::*;
+use crate::board::Board;
 
-#[derive(Component, Default, Clone)]
+#[derive(Component, Clone)]
 pub struct Location {
-    pub x: XCoord,
-    pub y: YCoord,
+    pub coord: UVec2,
 }
 
 impl Location {
-    pub fn adjacent(&self, dir: &Direction) -> Self {
-        let mut result = self.clone();
+    pub fn new(coord: UVec2) -> Self {
+        Self { coord }
+    }
 
-        match dir {
-            Direction::Up => result.y += 1,
-            Direction::Down => result.y -= 1,
-            Direction::Left => result.x -= 1,
-            Direction::Right => result.x += 1,
-        }
-
-        result
+    pub(crate) fn starting(board: &Board) -> Self {
+        Self::new(uvec2(board.limit.x / 2, (board.limit.y - 1) / 2 + 1))
     }
 }

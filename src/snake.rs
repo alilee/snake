@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy::core::FixedTimestep;
+use crate::board::Board;
 use crate::location::*;
 use crate::direction::{Direction};
 
@@ -16,10 +17,10 @@ impl bevy::prelude::Plugin for Plugin {
     }
 }
 
-fn setup(mut commands: Commands) {
+fn setup(mut commands: Commands, board: Res<Board>) {
     commands.spawn()
         .insert(Head)
-        .insert(Location::default())
+        .insert(Location::starting(&*board))
         .insert(Moving::default());
 }
 
@@ -31,8 +32,15 @@ pub struct Moving {
     pub(crate) dir: Direction,
 }
 
-fn move_snakes(mut query: Query<(&mut Location, &Moving), With<Head>>) {
-    for (mut loc, moving) in query.iter_mut() {
-        *loc = loc.adjacent(&moving.dir);
+fn move_snakes(board: Res<Board>, mut query: Query<(&mut Location, &mut Moving), With<Head>>) {
+    for (mut loc, mut moving) in query.iter_mut() {
+        *loc = match board.adjacent(&loc, &moving.dir) {
+            Some(loc) => loc,
+            None => {
+                println!("Snake hit a wall!");
+                *moving = Moving::default();
+                Location::starting(&*board)
+            },
+        };
     }
 }
