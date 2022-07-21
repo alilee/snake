@@ -30,12 +30,16 @@ pub(crate) struct Head;
 #[derive(Component, Default)]
 pub struct Moving {
     pub(crate) dir: Direction,
+    pub(crate) last_dir: Direction,
 }
 
 fn move_snakes(board: Res<Board>, mut query: Query<(&mut Location, &mut Moving), With<Head>>) {
     for (mut loc, mut moving) in query.iter_mut() {
         *loc = match board.adjacent(&loc, &moving.dir) {
-            Some(loc) => loc,
+            Some(loc) => {
+                moving.last_dir = moving.dir;
+                loc
+            },
             None => {
                 println!("Snake hit a wall!");
                 *moving = Moving::default();

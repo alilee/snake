@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 use bevy::input::keyboard::KeyboardInput;
 
-use crate::location::Location;
 use crate::direction::Direction;
 use crate::snake;
 
@@ -13,13 +12,13 @@ impl bevy::prelude::Plugin for Plugin {
     }
 }
 
-fn update_directions(mut query: Query<&mut snake::Moving, (With<Location>, With<snake::Head>)>, mut event_keyboard: EventReader<KeyboardInput>) {
-    for mut moving in query.iter_mut() {
-        for event in event_keyboard.iter() {
-            if let Some(code) = event.key_code {
-                if let Ok(dir) = Direction::try_from(code) {
-                    if moving.dir.get_opposite() != dir { moving.dir = dir; }
-                }
+fn update_directions(mut query: Query<&mut snake::Moving>, mut event_keyboard: EventReader<KeyboardInput>) {
+    let mut moving = query.single_mut();
+
+    for event in event_keyboard.iter() {
+        if let Some(code) = event.key_code {
+            if let Ok(dir) = Direction::try_from(code) {
+                if dir != moving.last_dir.get_opposite() { moving.dir = dir; }
             }
         }
     }
