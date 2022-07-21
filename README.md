@@ -17,7 +17,7 @@ We are going through these phases:
 8. sound
 9. multiplayer (are you kidding?)
 
-We are currently on step 2!
+We are currently on step 3!
 
 ## How to participate
 

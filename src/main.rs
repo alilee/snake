@@ -1,20 +1,20 @@
+mod location;
+mod direction;
+mod snake;
+mod board;
+mod render;
+mod input;
+mod window;
+
 use bevy::prelude::*;
 
 fn main() {
     App::new()
+        .add_plugin(window::Plugin)
         .add_plugins(DefaultPlugins)
-        .add_startup_system(setup)
+        .add_plugin(snake::Plugin)
+        .add_plugin(render::Plugin)
+        .add_plugin(input::Plugin)
+        .add_plugin(board::Plugin)
         .run();
-}
-
-fn setup(mut commands: Commands) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-    commands.spawn_bundle(SpriteBundle {
-        sprite: Sprite {
-            color: Color::rgb(0.13, 0.73, 0.13),
-            custom_size: Some(Vec2::new(1280.0, 720.0)),
-            ..default()
-        },
-        ..default()
-    });
 }
