@@ -5,6 +5,7 @@ mod board;
 mod render;
 mod input;
 mod window;
+mod apple;
 
 use bevy::prelude::*;
 
@@ -16,5 +17,6 @@ fn main() {
         .add_plugin(render::Plugin)
         .add_plugin(input::Plugin)
         .add_plugin(board::Plugin)
+        .add_plugin(apple::Plugin)
         .run();
 }

@@ -17,10 +17,11 @@ impl bevy::prelude::Plugin for Plugin {
     }
 }
 
-fn setup(mut commands: Commands, board: Res<Board>) {
+fn setup(mut commands: Commands, mut board: ResMut<Board>) {
+    let starting_loc = board.reset();
     commands.spawn()
         .insert(Head)
-        .insert(board.starting_location())
+        .insert(starting_loc)
         .insert(Moving::default());
 }
 
@@ -33,17 +34,19 @@ pub struct Moving {
     pub(crate) last_dir: Direction,
 }
 
-fn move_snakes(board: Res<Board>, mut query: Query<(&mut Location, &mut Moving), With<Head>>) {
+fn move_snakes(mut board: ResMut<Board>, mut query: Query<(&mut Location, &mut Moving), With<Head>>) {
     for (mut loc, mut moving) in query.iter_mut() {
         *loc = match board.adjacent(&loc, &moving.dir) {
-            Some(loc) => {
+            Some(new_loc) => {
+                board.clear(&loc);
+                board.block(&new_loc);
                 moving.last_dir = moving.dir;
-                loc
+                new_loc
             },
             None => {
                 println!("Snake hit a wall!");
                 *moving = Moving::default();
-                board.starting_location()
+                board.reset()
             },
         };
     }
