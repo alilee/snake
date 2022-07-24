@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-#[derive(Component, Clone)]
+#[derive(Component, Clone, Debug)]
 pub struct Location {
     pub coord: UVec2,
 }
